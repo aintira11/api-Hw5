@@ -1,19 +1,19 @@
 
 import express from "express";
-import { conn, queryAsync } from "../dbconnect";
+import { conn } from "../dbconnect";
 
 export const router =express.Router();  //เอาไปใช้ข้างนอกด้วยเลย export
 
-router.get("/",(req, res)=>{
-       const sql = "select * from Movies1";
-       conn.query(sql, (err, result)=>{ 
-        if(err){
-            res.json(err);
-        }else{
-            res.json(result);
-        }
-    })
-    
+router.get("/all",(req, res)=>{
+    const sql = `SELECT * FROM Movies1`;
+    conn.query(sql, (err, result)=>{ 
+     if(err){
+         res.json(err);
+     }else{
+         res.json(result);
+     }
+ })
+ 
 });
 
 
@@ -73,10 +73,7 @@ router.get("/:title", (req, res) => {
 });
 
 
-
-
 import mysql from "mysql";  
-import { Format } from "../model/models";
     //เพิ่ม ข้อมูล หนัง
   router.post("/movies",(req, res)=>{
     const movies = req.body;
@@ -116,71 +113,5 @@ import { Format } from "../model/models";
 
  
 
- //put /trip/1111
-//  router.put("/:id",(req,res)=>{
-//     const id = +req.params.id;
-//     const trip: Format = req.body;
-//     let sql =
-//     "update  `trip` set `name`=?, `country`=?, `destinationid`=?, `coverimage`=?, `detail`=?, `price`=?, `duration`=? where `idx`=?";
-//     sql = mysql.format(sql, [
-//         trip.name,
-//         trip.country,
-//         trip.destinationid,
-//         trip.coverimage,
-//         trip.detail,
-//         trip.price,
-//         trip.duration,
-//         id
-//       ]);
-//       conn.query(sql,(err,result)=>{
-//         if (err) throw err;
-//         res.status(201)
-//           .json({ affected_row: result.affectedRows });
-//       });
-//     });
 
-//put เหมือนเดิม แต่แบบ dynamic
- //put /trip/1111
-router.put("/:id", async(req,res)=>{
-    //Receive data
-    const id = +req.params.id;
-    const trip: Format = req.body;
-
-    //การไปเอาอันเดิม
-    //Get original data from table by id
-    let sql = 'selete * from trip where idx = ?';
-    sql = mysql.format(sql,[id]);
-    //Quer and Wait for result
-    const result = await queryAsync(sql);
-    const jsonStr =JSON.stringify(result);
-    const jsonObj = JSON.parse(jsonStr);
-    const tripOriginal : Format =jsonObj[0];
-
-    //Merge new daat to original
-    let updateTrip = {...tripOriginal, ...trip};
-
-    console.log(result);
-    res.status(200).json({});
-
-    sql ="update  `trip` set `name`=?, `country`=?, `destinationid`=?, `coverimage`=?, `detail`=?, `price`=?, `duration`=? where `idx`=?";
-    sql = mysql.format(sql, [
-      updateTrip.name,
-      updateTrip.country,
-      updateTrip.destinationid,
-      updateTrip.coverimage,
-      updateTrip.detail,
-      updateTrip.price,
-      updateTrip.duration,
-      id,
-    ]);
-    
-    conn.query(sql, (err, result) => {
-      if (err) throw err;
-      res.status(201).json({ affected_row: result.affectedRows });
-    });
-});
-
-
-  
-  
 

@@ -4,7 +4,7 @@ import mysql from "mysql";
 
 export const router =express.Router();  //เอาไปใช้ข้างนอกด้วยเลย export
 
-router.get("/",(req, res)=>{
+router.get("/allpe",(req, res)=>{
        const sql = "select * from Persons1";
        conn.query(sql, (err, result)=>{ 
         if(err){

@@ -11,7 +11,8 @@ import cors from "cors";
 
 app.use(
     cors({
-        //อนุญาติให้ เว็บนี้ไปเรียกเท่านั้น
+        
+      // origin: "https://api-hw5.onrender.com",
       origin: "*",
     })
   );
