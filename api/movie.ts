@@ -65,8 +65,7 @@ router.get("/:title", (req, res) => {
         FROM Movies1
         WHERE Movies1.title LIKE ?
     `;
-
-
+    
     conn.query(sql, ["%" + title + "%"], (err, result) => {
         if (err) {
             res.json(err);
