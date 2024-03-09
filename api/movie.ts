@@ -35,31 +35,37 @@ router.get("/:title", (req, res) => {
                     'runtime',Movies1.runtime,
                     'poster', Movies1.poster
                 ),
-                'stars', JSON_ARRAYAGG(
-                    JSON_OBJECT(
-                        'person_id', Persons1.person_id,
-                        'name', Persons1.name,
-                        'photo', Persons1.photo,
-                        'birthdate', Persons1.birthdate
+                'stars', (
+                    SELECT JSON_ARRAYAGG(
+                        JSON_OBJECT(
+                            'person_id', Persons1.person_id,
+                            'name', Persons1.name,
+                            'photo', Persons1.photo,
+                            'birthdate', Persons1.birthdate
+                        )
                     )
+                    FROM Stars1
+                    LEFT JOIN Persons1 ON Stars1.person_id = Persons1.person_id
+                    WHERE Stars1.movie_id = Movies1.movie_id
                 ),
-                'creators', JSON_ARRAYAGG(
-                    JSON_OBJECT(
-                        'person_id', Persons2.person_id,
-                        'name', Persons2.name,
-                        'photo', Persons2.photo,
-                        'birthdate', Persons2.birthdate
+                'creators', (
+                    SELECT JSON_ARRAYAGG(
+                        JSON_OBJECT(
+                            'person_id', Persons1.person_id,
+                            'name', Persons1.name,
+                            'photo', Persons1.photo,
+                            'birthdate', Persons1.birthdate
+                        )
                     )
+                    FROM Creators1
+                    LEFT JOIN Persons1 ON Creators1.person_id = Persons1.person_id
+                    WHERE Creators1.movie_id = Movies1.movie_id
                 )
             ) AS movie_details
         FROM Movies1
-        LEFT JOIN Stars1 ON Movies1.movie_id = Stars1.movie_id
-        LEFT JOIN Persons1 ON Stars1.person_id = Persons1.person_id
-        LEFT JOIN Creators1 ON Movies1.movie_id = Creators1.movie_id
-        LEFT JOIN Persons1 AS Persons2 ON Creators1.person_id = Persons2.person_id
         WHERE Movies1.title LIKE ?
-        GROUP BY Movies1.movie_id;
     `;
+
 
     conn.query(sql, ["%" + title + "%"], (err, result) => {
         if (err) {
