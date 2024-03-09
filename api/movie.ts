@@ -79,6 +79,11 @@ router.get("/:title", (req, res) => {
         }
     });
 });
+//map: ฟังก์ชั่นสำหรับวนลูปแต่ละ record
+//row: ตัวแปรเก็บ record แต่ละ record
+//JSON.parse(row.movie_details): แปลงข้อมูล JSON string
+//res.json({ movies }): ส่งผลลัพธ์ movie กลับไปยัง client
+
 
 
 import mysql from "mysql";  
