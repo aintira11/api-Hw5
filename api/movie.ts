@@ -19,6 +19,8 @@ router.get("/all",(req, res)=>{
 
 //ค้นหาโดยชื่อ
 //JSON_OBJECT ใน MySQL ช่วยในการสร้างอ็อบเจกต์ JSON จากคอลัมน์ในตาราง โดยสามารถระบุคอลัมน์และค่าที่ต้องการให้แปลงเป็นอ็อบเจกต์ JSON ได้
+// JSON_ARRAYAGG ใช้เพื่อสร้าง JSON array
+//JOIN แยกกัน
 router.get("/:title", (req, res) => {
     const title = req.params.title; 
     const sql = `
@@ -36,7 +38,7 @@ router.get("/:title", (req, res) => {
                     'poster', Movies1.poster
                 ),
                 'stars', (
-                    SELECT JSON_ARRAYAGG(
+                    SELECT JSON_ARRAYAGG(  
                         JSON_OBJECT(
                             'person_id', Persons1.person_id,
                             'name', Persons1.name,
@@ -66,7 +68,7 @@ router.get("/:title", (req, res) => {
         WHERE Movies1.title LIKE ?
     `;
 
-    
+
     conn.query(sql, ["%" + title + "%"], (err, result) => {
         if (err) {
             res.json(err);
